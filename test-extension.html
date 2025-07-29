@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste SHA256 Extension</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #007ACC;
+            background: #f8f9fa;
+        }
+        .result {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+            margin-top: 10px;
+        }
+        .success { border-left-color: #28a745; }
+        .error { border-left-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste da Lógica SHA256</h1>
+        <p>Este arquivo testa se a lógica JavaScript para SHA256 está funcionando corretamente.</p>
+
+        <div id="test-results"></div>
+
+        <hr style="margin: 30px 0;">
+
+        <h2>Teste Manual</h2>
+        <input type="text" id="testInput" placeholder="Digite um texto para testar" style="width: 70%; padding: 10px;">
+        <button onclick="testManual()" style="padding: 10px 20px;">Testar</button>
+        <div id="manualResult" class="result" style="margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        // Mesma função da extensão
+        async function convertToSHA256(text) {
+            try {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(text);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray
+                    .map(byte => byte.toString(16).padStart(2, '0'))
+                    .join('');
+                return hashHex;
+            } catch (error) {
+                console.error('Erro ao converter para SHA256:', error);
+                throw new Error('Falha na conversão SHA256');
+            }
+        }
+
+        // Casos de teste conhecidos
+        const testCases = [
+            {
+                input: 'hello',
+                expected: '2cf24dba4f21d4288094c4c6c0acad6d5b2e2c1e50ce58e24d1e04e6af8f2c5e'
+            },
+            {
+                input: 'Hello World',
+                expected: 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e'
+            },
+            {
+                input: '',
+                expected: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+            },
+            {
+                input: 'samerramos2016@gmail.com',
+                expected: '0f8ec1c2aec43e40c37c87a44d7b4bd1c22b93b6d4a3da6c8b9e3f2d17a4c8b6'
+            }
+        ];
+
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            let allPassed = true;
+
+            for (const testCase of testCases) {
+                try {
+                    const result = await convertToSHA256(testCase.input);
+                    const passed = result === testCase.expected;
+                    allPassed = allPassed && passed;
+
+                    const testDiv = document.createElement('div');
+                    testDiv.className = `test-case ${passed ? 'success' : 'error'}`;
+                    testDiv.innerHTML = `
+                        <strong>Entrada:</strong> "${testCase.input}" <br>
+                        <strong>Resultado:</strong> <span class="result">${result}</span><br>
+                        <strong>Esperado:</strong> <span class="result">${testCase.expected}</span><br>
+                        <strong>Status:</strong> ${passed ? '✅ PASSOU' : '❌ FALHOU'}
+                    `;
+                    resultsDiv.appendChild(testDiv);
+
+                } catch (error) {
+                    allPassed = false;
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'test-case error';
+                    testDiv.innerHTML = `
+                        <strong>Entrada:</strong> "${testCase.input}" <br>
+                        <strong>Erro:</strong> ${error.message}<br>
+                        <strong>Status:</strong> ❌ ERRO
+                    `;
+                    resultsDiv.appendChild(testDiv);
+                }
+            }
+
+            // Resultado final
+            const finalDiv = document.createElement('div');
+            finalDiv.className = `test-case ${allPassed ? 'success' : 'error'}`;
+            finalDiv.innerHTML = `
+                <h3>${allPassed ? '🎉 TODOS OS TESTES PASSARAM!' : '⚠️ ALGUNS TESTES FALHARAM'}</h3>
+                <p>${allPassed ? 'A extensão deve funcionar corretamente.' : 'Verifique a implementação.'}</p>
+            `;
+            resultsDiv.appendChild(finalDiv);
+        }
+
+        async function testManual() {
+            const input = document.getElementById('testInput').value;
+            const resultDiv = document.getElementById('manualResult');
+
+            if (!input.trim()) {
+                resultDiv.textContent = 'Digite um texto para testar';
+                return;
+            }
+
+            try {
+                const hash = await convertToSHA256(input);
+                resultDiv.innerHTML = `<strong>SHA256:</strong> ${hash}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<strong>Erro:</strong> ${error.message}`;
+            }
+        }
+
+        // Executar testes ao carregar a página
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

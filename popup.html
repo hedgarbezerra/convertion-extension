@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Multi Converter</h1>
+
+        <!-- Seletor de Categoria -->
+        <div class="category-section">
+            <label for="categorySelect">Categoria:</label>
+            <select id="categorySelect">
+                <option value="hash">🔐 Hash/Criptografia</option>
+                <option value="encoding">📝 Codificação</option>
+                <option value="numeric">🔢 Numérico</option>
+                <option value="text">📋 Texto</option>
+            </select>
+        </div>
+
+        <!-- Seletor de Algoritmo -->
+        <div class="algorithm-section">
+            <label for="algorithmSelect">Algoritmo:</label>
+            <select id="algorithmSelect">
+                <!-- Preenchido dinamicamente pelo JavaScript -->
+            </select>
+        </div>
+
+        <!-- Entrada de Dados -->
+        <div class="input-section">
+            <label for="inputText">Digite o texto:</label>
+            <textarea
+                id="inputText"
+                placeholder="Digite aqui o texto para conversão..."
+                rows="4"
+            ></textarea>
+        </div>
+
+        <!-- Configurações Extras (oculto por padrão) -->
+        <div class="settings-section" id="settingsSection" style="display: none;">
+            <label>Configurações:</label>
+            <div class="settings-controls">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="upperCase"> Maiúsculas
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="addSpaces"> Adicionar espaços
+                </label>
+                <label class="number-label">
+                    Base: <input type="number" id="baseInput" min="2" max="36" value="10">
+                </label>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="button-section">
+            <button id="convertBtn">🔄 Converter</button>
+            <button id="clearBtn">🧹 Limpar</button>
+            <button id="swapBtn" style="display: none;">⇄ Inverter</button>
+        </div>
+
+        <!-- Resultado -->
+        <div class="output-section">
+            <label for="outputResult">Resultado:</label>
+            <textarea
+                id="outputResult"
+                placeholder="O resultado aparecerá aqui..."
+                rows="3"
+                readonly
+            ></textarea>
+            <div class="output-controls">
+                <button id="copyBtn" disabled>📋 Copiar</button>
+                <button id="downloadBtn" disabled style="display: none;">💾 Download</button>
+            </div>
+        </div>
+
+        <!-- Informações do Algoritmo -->
+        <div class="info" id="algorithmInfo">
+            <small>💡 Selecione um algoritmo para ver informações sobre ele.</small>
+        </div>
+
+        <!-- Histórico (expansível) -->
+        <div class="history-section">
+            <button id="historyToggle" class="history-header">
+                📜 Histórico <span class="toggle-icon">▼</span>
+            </button>
+            <div id="historyContent" class="history-content" style="display: none;">
+                <div class="history-controls">
+                    <button id="clearHistoryBtn">🗑️ Limpar Histórico</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <div class="no-history">Nenhum histórico ainda</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

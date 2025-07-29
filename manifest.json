@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Multi Converter - Hash, Encoding & More",
+  "version": "2.0",
+  "description": "Ferramenta completa de conversão: Hash (SHA256, SHA1, MD5), Encoding (Base64, URL), Numérico e Texto",
+  "permissions": [],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Multi Converter"
+  },
+  "icons": {
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  }
+}
