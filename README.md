@@ -34,6 +34,15 @@ Uma extensão poderosa e completa para conversões de texto, hash, encoding e mu
 - ✅ **Contador de Palavras** - Conta caracteres, palavras, linhas
 - ✅ **Remover Espaços** - Remove todos os espaços em branco
 
+### 🎲 Gerador de Dados Aleatórios
+- ✅ **UUID v4** - Gera identificadores únicos universais
+- ✅ **String Aleatória** - Strings personalizáveis com critérios
+- ✅ **Hexadecimal Aleatório** - Strings hex de comprimento configurável
+- ✅ **Base64 Aleatório** - Dados aleatórios codificados em Base64
+- ✅ **Número Aleatório** - Números em intervalo personalizado
+- ✅ **Senha Aleatória** - Senhas seguras com critérios específicos
+- ✅ **Hash Aleatório** - Hashes de dados aleatórios com algoritmos variados
+
 ## 🎯 Recursos Avançados
 
 - 🔄 **Interface Intuitiva** - Seletor de categorias e algoritmos
@@ -115,6 +124,17 @@ Primeira Maiúscula: Hello World
 Invertido: dlrow olleh
 ```
 
+### Gerador
+```
+UUID v4: 550e8400-e29b-41d4-a716-446655440000
+String Aleatória (32 chars): K8mN2pQ9rS5tU7vW3xY1zA4bC6dE8fG
+Hexadecimal (16 chars): a1b2c3d4e5f67890
+Base64 (24 chars): dGVzdCBkYXRhIGZvciBiYXNlNjQ=
+Número (1-100): 42
+Senha (12 chars): Kj#9mN2$pQ5
+Hash Aleatório: SHA-256: a1b2c3d4e5f67890...
+```
+
 ## 📜 Histórico e Configurações
 
 - **Histórico Automático:** As últimas 20 conversões são salvas automaticamente
@@ -123,6 +143,10 @@ Invertido: dlrow olleh
   - Hash/Encoding: Opções de maiúsculas e espaçamento
   - Numérico: Configuração de base numérica e inversão
   - Texto: Aplicação direta sem configurações extras
+  - Gerador: Comprimento, tipos de caracteres, quantidade e critérios específicos
+    - **String/Senha Aleatória:** Todas as configurações disponíveis
+    - **Hexadecimal/Base64:** Todas as configurações disponíveis
+    - **UUID/Número/Hash:** Configurações ocultadas (não aplicáveis)
 
 ## 🛡️ Segurança e Privacidade
 
@@ -181,11 +205,13 @@ edge-sha256-extension/
 - ⚙️ Configurações avançadas
 - 🎨 Design responsivo melhorado
 
-Para atualizar:
-1. Modifique os arquivos necessários
-2. Aumente o número da versão no `manifest.json`
-3. Vá em `edge://extensions/`
-4. Clique no botão "🔄" (recarregar) na extensão
+### Versão 2.1 - Gerador de Dados Aleatórios
+- 🎲 Nova categoria "Gerador" com 7 tipos de geração
+- 🔐 UUID v4, strings aleatórias, hex, Base64
+- 🎯 Números aleatórios em intervalos personalizados
+- 🔑 Gerador de senhas seguras com critérios
+- 🎲 Hashes aleatórios com algoritmos variados
+- ⚙️ Configurações avançadas para cada tipo de geração
 
 ## 🤝 Contribuições
 
@@ -202,4 +228,4 @@ Sugestões de novos algoritmos ou melhorias são bem-vindas! Esta extensão foi 
 
 **Desenvolvido com ❤️ para facilitar todas as suas conversões de texto**
 
-**Versão 2.0** - Multi Converter completo
+**Versão 2.1** - Multi Converter com Gerador de Dados Aleatórios

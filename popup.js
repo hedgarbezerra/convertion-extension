@@ -18,6 +18,15 @@ const historyContent = document.getElementById('historyContent');
 const historyList = document.getElementById('historyList');
 const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
+// Elementos do Gerador
+const generatorSettings = document.getElementById('generatorSettings');
+const lengthInput = document.getElementById('lengthInput');
+const includeUppercase = document.getElementById('includeUppercase');
+const includeLowercase = document.getElementById('includeLowercase');
+const includeNumbers = document.getElementById('includeNumbers');
+const includeSymbols = document.getElementById('includeSymbols');
+const quantityInput = document.getElementById('quantityInput');
+
 // Configuração dos algoritmos por categoria
 const algorithms = {
     hash: {
@@ -49,6 +58,15 @@ const algorithms = {
         'REVERSE': { name: 'Texto Invertido', info: 'Inverte a ordem dos caracteres no texto.', crypto: null },
         'WORD_COUNT': { name: 'Contador de Palavras', info: 'Conta caracteres, palavras, linhas e parágrafos.', crypto: null },
         'REMOVE_SPACES': { name: 'Remover Espaços', info: 'Remove todos os espaços em branco do texto.', crypto: null }
+    },
+    generator: {
+        'UUID': { name: 'UUID v4', info: 'Gera um identificador único universal (UUID) versão 4.', crypto: null },
+        'RANDOM_STRING': { name: 'String Aleatória', info: 'Gera uma string aleatória com caracteres personalizáveis.', crypto: null },
+        'RANDOM_HEX': { name: 'Hexadecimal Aleatório', info: 'Gera uma string hexadecimal aleatória.', crypto: null },
+        'RANDOM_BASE64': { name: 'Base64 Aleatório', info: 'Gera dados aleatórios codificados em Base64.', crypto: null },
+        'RANDOM_NUMBER': { name: 'Número Aleatório', info: 'Gera números aleatórios em um intervalo especificado.', crypto: null },
+        'RANDOM_PASSWORD': { name: 'Senha Aleatória', info: 'Gera senhas seguras com critérios personalizáveis.', crypto: null },
+        'RANDOM_HASH': { name: 'Hash Aleatório', info: 'Gera hashes aleatórios usando diferentes algoritmos.', crypto: null }
     }
 };
 
@@ -96,19 +114,148 @@ function updateSettings() {
     
     // Mostra/esconde configurações
     settingsSection.style.display = 'none';
+    generatorSettings.style.display = 'none';
     swapBtn.style.display = 'none';
     downloadBtn.style.display = 'none';
     
-    if (category === 'numeric') {
-        settingsSection.style.display = 'block';
-        if (algorithm.includes('TO')) {
-            swapBtn.style.display = 'inline-block';
+    // Mostra/esconde seção de entrada de dados
+    const inputSection = document.querySelector('.input-section');
+    
+    if (category === 'generator') {
+        generatorSettings.style.display = 'block';
+        
+        // Para Hash Aleatório, mostra a caixa de texto pois precisa de entrada
+        if (algorithm === 'RANDOM_HASH') {
+            inputSection.style.display = 'block';
+        } else {
+            inputSection.style.display = 'none';
+        }
+        
+        updateGeneratorSettings();
+    } else {
+        inputSection.style.display = 'block';
+        
+        if (category === 'numeric') {
+            settingsSection.style.display = 'block';
+            if (algorithm.includes('TO')) {
+                swapBtn.style.display = 'inline-block';
+            }
+        }
+        
+        if (category === 'hash' || category === 'encoding') {
+            settingsSection.style.display = 'block';
         }
     }
     
-    if (category === 'hash' || category === 'encoding') {
-        settingsSection.style.display = 'block';
+    // Atualiza placeholder do campo de entrada
+    updateInputPlaceholder();
+}
+
+// Atualiza configurações específicas do gerador
+function updateGeneratorSettings() {
+    const algorithm = algorithmSelect.value;
+    const inputSection = document.querySelector('.input-section');
+    
+    // Configurações padrão
+    lengthInput.value = 32;
+    quantityInput.value = 1;
+    includeUppercase.checked = true;
+    includeLowercase.checked = true;
+    includeNumbers.checked = true;
+    includeSymbols.checked = false;
+    
+    // Configurações específicas por algoritmo
+    switch (algorithm) {
+        case 'UUID':
+            lengthInput.style.display = 'none';
+            includeUppercase.style.display = 'none';
+            includeLowercase.style.display = 'none';
+            includeNumbers.style.display = 'none';
+            includeSymbols.style.display = 'none';
+            inputSection.style.display = 'none';
+            break;
+        case 'RANDOM_NUMBER':
+            lengthInput.style.display = 'none';
+            includeUppercase.style.display = 'none';
+            includeLowercase.style.display = 'none';
+            includeNumbers.style.display = 'none';
+            includeSymbols.style.display = 'none';
+            inputSection.style.display = 'block';
+            break;
+        case 'RANDOM_PASSWORD':
+            lengthInput.value = 12;
+            includeSymbols.checked = true;
+            inputSection.style.display = 'none';
+            break;
+        case 'RANDOM_HASH':
+            lengthInput.style.display = 'none';
+            includeUppercase.style.display = 'none';
+            includeLowercase.style.display = 'none';
+            includeNumbers.style.display = 'none';
+            includeSymbols.style.display = 'none';
+            inputSection.style.display = 'block';
+            break;
+        case 'RANDOM_STRING':
+            inputSection.style.display = 'none';
+            break;
+        case 'RANDOM_HEX':
+            inputSection.style.display = 'none';
+            break;
+        case 'RANDOM_BASE64':
+            inputSection.style.display = 'none';
+            break;
+        default:
+            lengthInput.style.display = 'block';
+            includeUppercase.style.display = 'block';
+            includeLowercase.style.display = 'block';
+            includeNumbers.style.display = 'block';
+            includeSymbols.style.display = 'block';
+            inputSection.style.display = 'none';
     }
+}
+
+// Atualiza placeholder do campo de entrada baseado na categoria
+function updateInputPlaceholder() {
+    const category = categorySelect.value;
+    const algorithm = algorithmSelect.value;
+    
+    let placeholder = "Digite aqui o texto para conversão...";
+    
+    if (category === 'generator') {
+        switch (algorithm) {
+            case 'UUID':
+                placeholder = "Clique em 'Gerar' para criar um UUID v4...";
+                break;
+            case 'RANDOM_STRING':
+                placeholder = "Configure as opções e clique em 'Gerar'...";
+                break;
+            case 'RANDOM_HEX':
+                placeholder = "Configure o comprimento e clique em 'Gerar'...";
+                break;
+            case 'RANDOM_BASE64':
+                placeholder = "Configure o comprimento e clique em 'Gerar'...";
+                break;
+            case 'RANDOM_NUMBER':
+                placeholder = "Digite o intervalo (ex: 1-100) e clique em 'Gerar'...";
+                break;
+            case 'RANDOM_PASSWORD':
+                placeholder = "Configure os critérios e clique em 'Gerar'...";
+                break;
+            case 'RANDOM_HASH':
+                placeholder = "Digite um texto para gerar hash aleatório (opcional)...";
+                break;
+        }
+    } else if (category === 'numeric') {
+        placeholder = "Digite um número para conversão...";
+    } else if (category === 'hash') {
+        placeholder = "Digite o texto para gerar hash...";
+    } else if (category === 'encoding') {
+        placeholder = "Digite o texto para codificação...";
+    } else if (category === 'text') {
+        placeholder = "Digite o texto para transformação...";
+    }
+    
+    inputText.placeholder = placeholder;
 }
 
 // Função principal de conversão
@@ -117,14 +264,15 @@ async function convertText() {
     const algorithm = algorithmSelect.value;
     const text = inputText.value;
     
-    if (!text.trim()) {
+    // Para geradores, não é necessário texto de entrada na maioria dos casos
+    if (category !== 'generator' && !text.trim()) {
         showFeedback(inputText, 'error');
         inputText.focus();
         return;
     }
     
     try {
-        convertBtn.textContent = 'Convertendo...';
+        convertBtn.textContent = category === 'generator' ? 'Gerando...' : 'Convertendo...';
         convertBtn.disabled = true;
         
         let result;
@@ -141,6 +289,9 @@ async function convertText() {
                 break;
             case 'text':
                 result = convertTextCase(algorithm, text);
+                break;
+            case 'generator':
+                result = await generateRandom(algorithm, text);
                 break;
             default:
                 throw new Error('Categoria não suportada');
@@ -159,7 +310,7 @@ async function convertText() {
         copyBtn.disabled = false;
         
         // Adiciona ao histórico
-        addToHistory(category, algorithm, text, result);
+        addToHistory(category, algorithm, text || 'Geração automática', result);
         
         showFeedback(outputResult, 'success-animation');
         
@@ -167,7 +318,7 @@ async function convertText() {
         outputResult.value = `Erro: ${error.message}`;
         showFeedback(outputResult, 'error');
     } finally {
-        convertBtn.textContent = '🔄 Converter';
+        convertBtn.textContent = category === 'generator' ? '🎲 Gerar' : '🔄 Converter';
         convertBtn.disabled = false;
     }
 }
@@ -270,6 +421,205 @@ function convertTextCase(algorithm, text) {
     }
 }
 
+// Geração de dados aleatórios
+async function generateRandom(algorithm, text) {
+    const quantity = parseInt(quantityInput.value) || 1;
+    const results = [];
+    
+    for (let i = 0; i < quantity; i++) {
+        let result;
+        
+        switch (algorithm) {
+            case 'UUID':
+                result = generateUUID();
+                break;
+            case 'RANDOM_STRING':
+                result = generateRandomString();
+                break;
+            case 'RANDOM_HEX':
+                result = generateRandomHex();
+                break;
+            case 'RANDOM_BASE64':
+                result = generateRandomBase64();
+                break;
+            case 'RANDOM_NUMBER':
+                result = generateRandomNumber(text);
+                break;
+            case 'RANDOM_PASSWORD':
+                result = generateRandomPassword();
+                break;
+            case 'RANDOM_HASH':
+                result = await generateRandomHash(text);
+                break;
+            default:
+                throw new Error('Algoritmo de geração não suportado');
+        }
+        
+        results.push(result);
+    }
+    
+    return quantity === 1 ? results[0] : results.join('\n');
+}
+
+// Gera UUID v4
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+// Gera string aleatória
+function generateRandomString() {
+    const length = parseInt(lengthInput.value) || 32;
+    const chars = getCharacterSet();
+    
+    if (chars.length === 0) {
+        throw new Error('Selecione pelo menos um tipo de caractere');
+    }
+    
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    return result;
+}
+
+// Gera string hexadecimal aleatória
+function generateRandomHex() {
+    const length = parseInt(lengthInput.value) || 32;
+    const chars = '0123456789abcdef';
+    let result = '';
+    
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    return result;
+}
+
+// Gera dados Base64 aleatórios
+function generateRandomBase64() {
+    const length = parseInt(lengthInput.value) || 32;
+    const bytes = new Uint8Array(length);
+    crypto.getRandomValues(bytes);
+    
+    // Converte para string binária
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    
+    return btoa(binary);
+}
+
+// Gera número aleatório
+function generateRandomNumber(range) {
+    if (!range.trim()) {
+        return Math.floor(Math.random() * 100) + 1;
+    }
+    
+    const parts = range.split('-').map(s => s.trim());
+    if (parts.length !== 2) {
+        throw new Error('Formato inválido. Use: min-max (ex: 1-100)');
+    }
+    
+    const min = parseInt(parts[0]);
+    const max = parseInt(parts[1]);
+    
+    if (isNaN(min) || isNaN(max) || min >= max) {
+        throw new Error('Intervalo inválido. Min deve ser menor que max');
+    }
+    
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Gera senha aleatória
+function generateRandomPassword() {
+    const length = parseInt(lengthInput.value) || 12;
+    const chars = getCharacterSet();
+    
+    if (chars.length === 0) {
+        throw new Error('Selecione pelo menos um tipo de caractere');
+    }
+    
+    // Garante que a senha tenha pelo menos um caractere de cada tipo selecionado
+    let password = '';
+    const selectedTypes = [];
+    
+    if (includeUppercase.checked) {
+        password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
+        selectedTypes.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    }
+    
+    if (includeLowercase.checked) {
+        password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
+        selectedTypes.push('abcdefghijklmnopqrstuvwxyz');
+    }
+    
+    if (includeNumbers.checked) {
+        password += '0123456789'.charAt(Math.floor(Math.random() * 10));
+        selectedTypes.push('0123456789');
+    }
+    
+    if (includeSymbols.checked) {
+        password += '!@#$%^&*()_+-=[]{}|;:,.<>?'.charAt(Math.floor(Math.random() * 30));
+        selectedTypes.push('!@#$%^&*()_+-=[]{}|;:,.<>?');
+    }
+    
+    // Preenche o resto da senha
+    for (let i = password.length; i < length; i++) {
+        const randomType = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
+        password += randomType.charAt(Math.floor(Math.random() * randomType.length));
+    }
+    
+    // Embaralha a senha
+    return password.split('').sort(() => Math.random() - 0.5).join('');
+}
+
+// Gera hash aleatório
+async function generateRandomHash(text) {
+    const algorithm = 'SHA-256'; // Sempre usa SHA-256
+    
+    if (!text.trim()) {
+        // Gera dados aleatórios se não houver texto
+        const randomData = generateRandomString();
+        text = randomData;
+    }
+    
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest(algorithm, data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    
+    return `${algorithm}: ${hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('')}`;
+}
+
+// Obtém o conjunto de caracteres baseado nas configurações
+function getCharacterSet() {
+    let chars = '';
+    
+    if (includeUppercase.checked) {
+        chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    }
+    
+    if (includeLowercase.checked) {
+        chars += 'abcdefghijklmnopqrstuvwxyz';
+    }
+    
+    if (includeNumbers.checked) {
+        chars += '0123456789';
+    }
+    
+    if (includeSymbols.checked) {
+        chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    }
+    
+    return chars;
+}
+
 // MD5 simplificado (apenas para demonstração - não use em produção)
 async function md5(text) {
     // Esta é uma implementação muito básica apenas para demonstração
@@ -366,6 +716,43 @@ categorySelect.addEventListener('change', loadAlgorithms);
 algorithmSelect.addEventListener('change', () => {
     updateAlgorithmInfo();
     updateSettings();
+});
+
+// Event listeners para configurações do gerador
+lengthInput.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
+});
+
+includeUppercase.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
+});
+
+includeLowercase.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
+});
+
+includeNumbers.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
+});
+
+includeSymbols.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
+});
+
+quantityInput.addEventListener('change', () => {
+    if (categorySelect.value === 'generator') {
+        updateGeneratorSettings();
+    }
 });
 
 convertBtn.addEventListener('click', convertText);

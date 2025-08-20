@@ -129,6 +129,35 @@ textarea:focus {
     font-size: 12px;
 }
 
+/* Configurações do Gerador */
+.generator-settings {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.generator-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.generator-controls .checkbox-label {
+    min-width: 120px;
+}
+
+.generator-controls .number-label {
+    min-width: 100px;
+}
+
+.generator-controls .number-label input[type="number"] {
+    width: 70px;
+}
+
 /* Botões */
 .button-section {
     display: flex;
